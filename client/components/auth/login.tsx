@@ -14,26 +14,39 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "../ui/card";
-import { common } from "./signup";
 import Common from "./common";
+import { common } from "./signup";
+import { trpc } from "@/trpc-client/client";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
-const formSchema = z.object({
+export const loginSchema = z.object({
   ...common,
 });
 
-type TFormData = z.infer<typeof formSchema>;
+export type TFormData = z.infer<typeof loginSchema>;
 
 const Login = () => {
   const form = useForm<TFormData>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
+  const { mutateAsync, isLoading } = trpc.auth.login.useMutation();
+  const router = useRouter();
+
   const loginHandler = async (values: TFormData) => {
-    console.log(values);
+    try {
+      const rest = await mutateAsync(values);
+      if (rest.status) {
+        return router.push("/");
+      }
+    } catch (error: any) {
+      toast.error(error.message || "An unknown error occurred");
+    }
   };
   return (
     <Card className=" w-[95%] md:w-[500px] m-auto">
@@ -75,7 +88,9 @@ const Login = () => {
                 </FormItem>
               )}
             />
-            <Button className="w-full mt-4">Login</Button>
+            <Button className="w-full mt-4">
+              {isLoading ? "Loading..." : "Login"}
+            </Button>
           </form>
         </Form>
       </CardContent>

@@ -1,21 +1,15 @@
+import { TUserData } from "@/components/auth/signup";
 import mongoose from "mongoose";
 
-export interface User {
-  name: string;
-  email: string;
-  password: string;
-  username: string;
-}
+export interface MongoUser extends TUserData, mongoose.Document {}
 
-export interface MongoUser extends User, mongoose.Document {}
-
-export type TUser = User & {
+export type TUser = TUserData & {
   _id: string;
   createdAt: string;
   updatedAt: string;
 };
 
-const UserSchema = new mongoose.Schema<User>({
+const UserSchema = new mongoose.Schema<TUserData>({
   name: {
     type: String,
     required: true,
@@ -34,4 +28,5 @@ const UserSchema = new mongoose.Schema<User>({
   },
 });
 
-export default mongoose.models.User || mongoose.model<User>("User", UserSchema);
+export default mongoose.models.User ||
+  mongoose.model<TUserData>("User", UserSchema);

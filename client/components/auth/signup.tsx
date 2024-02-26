@@ -15,6 +15,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "../ui/card";
 import Common from "./common";
+import { trpc } from "@/trpc-client/client";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export const common = {
   email: z
@@ -27,7 +30,7 @@ export const common = {
     .max(20, { message: "Password is too long" }),
 };
 
-const formSchema = z.object({
+export const signUpSchema = z.object({
   name: z
     .string()
     .min(1, { message: "Name is required" })
@@ -40,11 +43,11 @@ const formSchema = z.object({
     .regex(/^[a-z0-9_-]+$/, { message: "Invalid username" }),
 });
 
-type TFormData = z.infer<typeof formSchema>;
+export type TUserData = z.infer<typeof signUpSchema>;
 
 const SignUp = () => {
-  const form = useForm<TFormData>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<TUserData>({
+    resolver: zodResolver(signUpSchema),
     defaultValues: {
       username: "",
       name: "",
@@ -53,8 +56,20 @@ const SignUp = () => {
     },
   });
 
-  const signUpHandler = async (values: TFormData) => {
-    console.log(values);
+  const { mutateAsync, isLoading } = trpc.auth.createAccount.useMutation();
+  const router = useRouter();
+
+  const signUpHandler = async (values: TUserData) => {
+    try {
+      const res = await mutateAsync(values);
+      if (res.status) {
+        toast.success("Account created successfully");
+        return router.push("/login");
+      }
+      throw new Error("An unknown error occurred");
+    } catch (error: any) {
+      toast.error(error.message || "An unknown error occurred");
+    }
   };
   return (
     <Card className=" w-[95%] md:w-[500px] m-auto">
@@ -124,7 +139,9 @@ const SignUp = () => {
                 </FormItem>
               )}
             />
-            <Button className="w-full mt-4">Create account</Button>
+            <Button className="w-full mt-4">
+              {isLoading ? "Loading..." : "Create account"}
+            </Button>
           </form>
         </Form>
       </CardContent>
