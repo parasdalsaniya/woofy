@@ -2,7 +2,7 @@ import userModel, { TUser } from '@/models/user-model';
 import dbConnect from '@/db/mongoose';
 import { router, publicProcedure } from '..';
 import { Argon2id } from 'oslo/password';
-import { lucia } from '@/lib/auth';
+import { lucia, validateRequest } from '@/lib/auth';
 import { cookies } from 'next/headers';
 import z from 'zod';
 
@@ -95,7 +95,11 @@ export const authRouter = router({
           sessionCookie.value,
           sessionCookie.attributes
         );
-        return { status: true, message: 'Logged in successfully' };
+        return {
+          status: true,
+          message: 'Logged in successfully',
+          data: { id: user._id.toString(), email: user.email },
+        };
       } catch (error: any) {
         throw new Error(error.message || 'An unknown error occurred');
       }
@@ -120,4 +124,21 @@ export const authRouter = router({
         throw new Error(error.message || 'An unknown error occurred');
       }
     }),
+  logout: publicProcedure.mutation(async () => {
+    try {
+      const { session } = await validateRequest();
+      if (!session) throw new Error('Unauthorized');
+
+      await lucia.invalidateSession(session.id);
+      const sessionCookie = lucia.createBlankSessionCookie();
+      cookies().set(
+        sessionCookie.name,
+        sessionCookie.value,
+        sessionCookie.attributes
+      );
+      return true;
+    } catch (error: any) {
+      throw new Error(error.message || 'An unknown error occurred');
+    }
+  }),
 });

@@ -12,7 +12,7 @@ const Common: React.FC<TCommon> = ({ title, path, name }) => {
   return (
     <CardHeader className="space-y-1">
       <div className=" flex items-center justify-between">
-        <CardTitle className="text-2xl">{title}</CardTitle>
+        <CardTitle className="text-xl md:text-2xl ">{title}</CardTitle>
 
         <Link href={`/${path}`}>
           <span className=" underline-offset-4 hover:underline">{name}</span>

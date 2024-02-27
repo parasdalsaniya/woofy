@@ -19,6 +19,7 @@ import { common } from './signup';
 import { trpc } from '@/trpc-client/client';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import { useAppStore } from '@/store/app-state';
 
 export const loginSchema = z.object({
   ...common,
@@ -37,11 +38,13 @@ const Login = () => {
 
   const { mutateAsync, isLoading } = trpc.auth.login.useMutation();
   const router = useRouter();
+  const setUser = useAppStore((state) => state.setUser);
 
   const loginHandler = async (values: TFormData) => {
     try {
       const rest = await mutateAsync(values);
       if (rest.status) {
+        setUser(rest.data);
         return router.push('/');
       }
     } catch (error: any) {
@@ -50,7 +53,7 @@ const Login = () => {
   };
   return (
     <Card className=" m-auto w-[95%] md:w-[500px]">
-      <Common title="Login to your Account" path="signup" name="Login" />
+      <Common title="Login to your Account" path="signup" name="Sign Up" />
       <CardContent className="grid gap-4">
         <Form {...form}>
           <form

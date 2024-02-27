@@ -4,6 +4,7 @@ import './globals.css';
 import { Provider } from '@/lib/reactQuery-provider';
 import { ThemeProvider } from '@/lib/theme-provider';
 import { Toaster } from '@/components/ui/sonner';
+import Navbar from '@/components/layout/navbar';
 
 const poppins = Poppins({
   weight: ['400', '700'],
@@ -32,6 +33,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Provider>
+            <Navbar />
             {children}
             <Toaster />
           </Provider>

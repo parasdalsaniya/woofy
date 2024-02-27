@@ -96,7 +96,7 @@ const SignUp = () => {
 
   return (
     <Card className=" m-auto w-[95%] md:w-[500px]">
-      <Common title="Create an account" path="login" name="Sign Up" />
+      <Common title="Create an account" path="login" name="Login" />
       <CardContent className="grid gap-4">
         <Form {...form}>
           <form
