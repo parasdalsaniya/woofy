@@ -18,6 +18,7 @@ import Common from './common';
 import { trpc } from '@/trpc-client/client';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export const common = {
   email: z
@@ -56,11 +57,18 @@ const SignUp = () => {
     },
   });
 
+  const [timer, setTimer] = useState<NodeJS.Timeout | undefined>(undefined);
   const { mutateAsync, isLoading } = trpc.auth.createAccount.useMutation();
+  const { mutateAsync: checkUserName, data } =
+    trpc.auth.checkUserName.useMutation();
   const router = useRouter();
 
   const signUpHandler = async (values: TUserData) => {
     try {
+      if (data) {
+        return toast.error('Username is already taken');
+      }
+
       const res = await mutateAsync(values);
       if (res.status) {
         toast.success('Account created successfully');
@@ -71,6 +79,21 @@ const SignUp = () => {
       toast.error(error.message || 'An unknown error occurred');
     }
   };
+
+  const handleCheckUserName = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    try {
+      clearTimeout(timer);
+      const newTimer = setTimeout(async () => {
+        await checkUserName(e.target.value);
+      }, 500);
+      setTimer(newTimer);
+    } catch (error: any) {
+      toast.error(error.message || 'An unknown error occurred');
+    }
+  };
+
   return (
     <Card className=" m-auto w-[95%] md:w-[500px]">
       <Common title="Create an account" path="login" name="Sign Up" />
@@ -111,13 +134,27 @@ const SignUp = () => {
             <FormField
               control={form.control}
               name="username"
-              render={({ field }) => (
+              render={({ field: { value, onChange, ...rest } }) => (
                 <FormItem>
                   <FormLabel>Username</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter username" {...field} />
+                    <Input
+                      placeholder="Enter username"
+                      {...rest}
+                      value={value}
+                      onChange={(e) => {
+                        onChange(e);
+                        handleCheckUserName(e);
+                      }}
+                    />
                   </FormControl>
-                  <FormMessage />
+                  {data ? (
+                    <span className=" mt-3 inline-block text-[14px] text-red-900 ">
+                      Username is already taken
+                    </span>
+                  ) : (
+                    <FormMessage />
+                  )}
                 </FormItem>
               )}
             />

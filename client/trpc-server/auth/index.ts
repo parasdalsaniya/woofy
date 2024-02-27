@@ -47,6 +47,7 @@ export const authRouter = router({
       try {
         const existingUser = await userModel.findOne({
           email: input.email.toLowerCase(),
+          username: input.username.toLowerCase(),
         });
 
         if (existingUser) throw new Error('Email is already registered');
@@ -95,6 +96,26 @@ export const authRouter = router({
           sessionCookie.attributes
         );
         return { status: true, message: 'Logged in successfully' };
+      } catch (error: any) {
+        throw new Error(error.message || 'An unknown error occurred');
+      }
+    }),
+  checkUserName: publicProcedure
+    .input((v) => {
+      const data = z.string().safeParse(v);
+      if (!data.success) {
+        throw new Error(data.error.errors[0].message);
+      }
+      return data.data;
+    })
+    .mutation(async ({ input }) => {
+      try {
+        await dbConnect();
+        const user: TUser | null = await userModel.findOne({
+          username: input.toLowerCase(),
+        });
+        if (user) return true;
+        return false;
       } catch (error: any) {
         throw new Error(error.message || 'An unknown error occurred');
       }
