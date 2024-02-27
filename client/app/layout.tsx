@@ -1,20 +1,20 @@
-import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
-import "./globals.css";
-import { Provider } from "@/lib/reactQuery-provider";
-import { ThemeProvider } from "@/lib/theme-provider";
-import { Toaster } from "@/components/ui/sonner";
+import type { Metadata } from 'next';
+import { Poppins } from 'next/font/google';
+import './globals.css';
+import { Provider } from '@/lib/reactQuery-provider';
+import { ThemeProvider } from '@/lib/theme-provider';
+import { Toaster } from '@/components/ui/sonner';
 
 const poppins = Poppins({
-  weight: ["400", "700"],
-  style: ["normal", "italic"],
-  subsets: ["latin"],
-  display: "swap",
+  weight: ['400', '700'],
+  style: ['normal', 'italic'],
+  subsets: ['latin'],
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: "Woofy",
-  description: "A Chat App for hardcore chat lovers. 🚀",
+  title: 'Woofy',
+  description: 'A Chat App for hardcore chat lovers. 🚀',
 };
 
 export default function RootLayout({

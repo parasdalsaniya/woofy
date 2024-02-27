@@ -1,5 +1,5 @@
-import { TUserData } from "@/components/auth/signup";
-import mongoose from "mongoose";
+import { TUserData } from '@/components/auth/signup';
+import mongoose from 'mongoose';
 
 export interface MongoUser extends TUserData, mongoose.Document {}
 
@@ -29,4 +29,4 @@ const UserSchema = new mongoose.Schema<TUserData>({
 });
 
 export default mongoose.models.User ||
-  mongoose.model<TUserData>("User", UserSchema);
+  mongoose.model<TUserData>('User', UserSchema);

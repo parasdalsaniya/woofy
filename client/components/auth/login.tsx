@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
+import z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -11,14 +11,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "../ui/card";
-import Common from "./common";
-import { common } from "./signup";
-import { trpc } from "@/trpc-client/client";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent } from '../ui/card';
+import Common from './common';
+import { common } from './signup';
+import { trpc } from '@/trpc-client/client';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 export const loginSchema = z.object({
   ...common,
@@ -30,8 +30,8 @@ const Login = () => {
   const form = useForm<TFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
   });
 
@@ -42,14 +42,14 @@ const Login = () => {
     try {
       const rest = await mutateAsync(values);
       if (rest.status) {
-        return router.push("/");
+        return router.push('/');
       }
     } catch (error: any) {
-      toast.error(error.message || "An unknown error occurred");
+      toast.error(error.message || 'An unknown error occurred');
     }
   };
   return (
-    <Card className=" w-[95%] md:w-[500px] m-auto">
+    <Card className=" m-auto w-[95%] md:w-[500px]">
       <Common title="Login to your Account" path="signup" name="Login" />
       <CardContent className="grid gap-4">
         <Form {...form}>
@@ -88,8 +88,8 @@ const Login = () => {
                 </FormItem>
               )}
             />
-            <Button className="w-full mt-4">
-              {isLoading ? "Loading..." : "Login"}
+            <Button className="mt-4 w-full">
+              {isLoading ? 'Loading...' : 'Login'}
             </Button>
           </form>
         </Form>

@@ -1,13 +1,13 @@
-import { Lucia } from "lucia";
-import { cookies } from "next/headers";
-import { cache } from "react";
-import type { Session, User } from "lucia";
-import { adapter } from "@/models/auth-model";
+import { Lucia } from 'lucia';
+import { cookies } from 'next/headers';
+import { cache } from 'react';
+import type { Session, User } from 'lucia';
+import { adapter } from '@/models/auth-model';
 
 export const lucia = new Lucia(adapter, {
   sessionCookie: {
     attributes: {
-      secure: process.env.NODE_ENV === "production",
+      secure: process.env.NODE_ENV === 'production',
     },
   },
   getUserAttributes: (attributes: any) => {
@@ -52,7 +52,7 @@ export const validateRequest = cache(
   }
 );
 
-declare module "lucia" {
+declare module 'lucia' {
   interface Register {
     Lucia: typeof lucia;
   }
