@@ -24,8 +24,8 @@ const Logout: React.FC<TLogout> = ({ user }) => {
   const handleLogout = async () => {
     try {
       await mutateAsync();
-      setUser(null);
       router.push('/login');
+      setUser(null);
     } catch (error: any) {
       toast.error(error.message || 'An unknown error occurred');
     }

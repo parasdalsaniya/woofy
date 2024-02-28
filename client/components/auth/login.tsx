@@ -45,7 +45,7 @@ const Login = () => {
       const rest = await mutateAsync(values);
       if (rest.status) {
         setUser(rest.data);
-        return router.push('/');
+        return router.push('/chat');
       }
     } catch (error: any) {
       toast.error(error.message || 'An unknown error occurred');
