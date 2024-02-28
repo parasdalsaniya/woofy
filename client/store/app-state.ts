@@ -5,12 +5,22 @@ type TActiveUser = {
   email: string;
 };
 
+type TUser = {
+  id: number;
+  name: string;
+  image: string;
+};
+
 interface IAppState {
   user: TActiveUser | null;
   setUser: (user: TActiveUser | null) => void;
+  users: TUser[] | [];
+  setUsers: (users: TUser[] | []) => void;
 }
 
 export const useAppStore = create<IAppState>()((set) => ({
   user: null,
   setUser: (user) => set({ user }),
+  users: [],
+  setUsers: (users) => set({ users }),
 }));

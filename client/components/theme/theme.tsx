@@ -18,9 +18,9 @@ const Theme = () => {
   return (
     <div className=" flex h-[30px] w-[30px] items-center justify-center rounded-full hover:bg-popover">
       {theme === 'light' ? (
-        <Sun size={21} cursor="pointer" onClick={() => setTheme('dark')} />
+        <Moon size={21} cursor="pointer" onClick={() => setTheme('dark')} />
       ) : (
-        <Moon size={21} cursor="pointer" onClick={() => setTheme('light')} />
+        <Sun size={21} cursor="pointer" onClick={() => setTheme('light')} />
       )}
     </div>
   );

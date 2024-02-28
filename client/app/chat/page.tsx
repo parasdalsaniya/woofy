@@ -8,12 +8,12 @@ import {
 
 const Chat = () => {
   return (
-    <main className="m-auto mt-20 max-w-[1200px]">
+    <main className="m-auto mt-20 max-w-[1200px] p-4">
       <ResizablePanelGroup
         direction="horizontal"
         className="h-screen  rounded-lg border"
       >
-        <ResizablePanel defaultSize={25} minSize={15}>
+        <ResizablePanel defaultSize={30} minSize={22} maxSize={40}>
           <Sidebar />
         </ResizablePanel>
         <ResizableHandle withHandle />
