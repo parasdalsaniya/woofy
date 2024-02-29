@@ -1,25 +1,15 @@
 'use client';
 
-import Link from 'next/link';
-import Theme from '../theme/theme';
-import { Button } from '../ui/button';
 import { trpc } from '@/trpc-client/client';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useAppStore } from '@/store/app-state';
-import React, { useEffect } from 'react';
+import { LogOut } from 'lucide-react';
 
-type TLogout = {
-  user: {
-    id: string;
-    email: string;
-  } | null;
-};
-
-const Logout: React.FC<TLogout> = ({ user }) => {
+const Logout = () => {
   const { mutateAsync } = trpc.auth.logout.useMutation();
   const router = useRouter();
-  const { setUser, user: activeUser } = useAppStore((state) => state);
+  const { setUser } = useAppStore((state) => state);
 
   const handleLogout = async () => {
     try {
@@ -31,24 +21,14 @@ const Logout: React.FC<TLogout> = ({ user }) => {
     }
   };
 
-  useEffect(() => {
-    setUser(user);
-  }, [user]);
-
   return (
-    <div className="flex items-center justify-between gap-4">
-      <Theme />
-
-      {activeUser?.id ? (
-        <Button onClick={handleLogout} className=" h-8">
-          Logout
-        </Button>
-      ) : (
-        <Link href="/login">
-          <Button className=" h-8">Login</Button>
-        </Link>
-      )}
-    </div>
+    <li
+      className="flex cursor-pointer items-center gap-3 rounded p-2 hover:bg-accent"
+      onClick={handleLogout}
+    >
+      <LogOut />
+      <b>Logout</b>
+    </li>
   );
 };
 

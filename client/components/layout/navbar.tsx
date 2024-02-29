@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import Logout from '../auth/logout';
 import { validateRequest } from '@/lib/auth';
+import NavbarAction from './navbar-action';
 
 const Navbar = async () => {
   const { user } = await validateRequest();
@@ -12,7 +12,9 @@ const Navbar = async () => {
         </Link>
       </div>
 
-      <Logout user={{ id: user?.id?.toString() || '', email: user?.email }} />
+      <NavbarAction
+        user={{ id: user?.id?.toString() || '', email: user?.email }}
+      />
     </nav>
   );
 };

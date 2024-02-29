@@ -1,19 +1,18 @@
 'use client';
 
+import Logout from '@/components/auth/logout';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { Moon, Sun, User } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import EditProfile from './edit-profile';
 
 const Tabs = () => {
   const { theme, setTheme } = useTheme();
   return (
     <section className=" mt-8">
       <ul>
-        <li className=" flex cursor-pointer items-center gap-3 rounded p-2 hover:bg-accent">
-          <User />
-          <b>Edit Profile</b>
-        </li>
+        <EditProfile />
         <Separator className=" my-1" />
         <li className="flex cursor-pointer items-center justify-between gap-3 rounded p-2 hover:bg-accent">
           {theme === 'light' ? (
@@ -35,6 +34,8 @@ const Tabs = () => {
             }}
           />
         </li>
+        <Separator className=" my-1" />
+        <Logout />
         <Separator className=" my-1" />
       </ul>
     </section>

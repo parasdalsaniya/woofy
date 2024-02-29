@@ -45,6 +45,7 @@ const Login = () => {
       const rest = await mutateAsync(values);
       if (rest.status) {
         setUser(rest.data);
+        localStorage.setItem('user', JSON.stringify(true));
         return router.push('/chat');
       }
     } catch (error: any) {
