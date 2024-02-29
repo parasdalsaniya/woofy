@@ -9,7 +9,7 @@ type TUpload = {
 
 const Upload: React.FC<TUpload> = ({ image, onChangeFile }) => {
   return (
-    <div className="flex w-full items-center justify-center">
+    <div className="mb-4 flex w-full items-center justify-center">
       {!image ? (
         <label
           htmlFor="dropzone-file"

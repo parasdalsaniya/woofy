@@ -11,6 +11,10 @@ type TNavAction = {
   user: {
     id: string;
     email: string;
+    image: string | undefined;
+    bio: string | undefined;
+    name: string;
+    username: string;
   } | null;
 };
 

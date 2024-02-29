@@ -5,6 +5,7 @@ import { Argon2id } from 'oslo/password';
 import { lucia, validateRequest } from '@/lib/auth';
 import { cookies } from 'next/headers';
 import z from 'zod';
+import authModel, { TSession } from '@/models/auth-model';
 
 export const common = {
   email: z
@@ -21,17 +22,21 @@ export const loginSchema = z.object({
   ...common,
 });
 
-export const signUpSchema = z.object({
+export const commonTwo = {
   name: z
     .string()
     .min(1, { message: 'Name is required' })
     .max(50, { message: 'Name is too long' }),
-  ...common,
   username: z
     .string()
     .min(3, { message: 'Username is too short man' })
     .max(31, { message: 'Username is too long' })
     .regex(/^[a-z0-9_-]+$/, { message: 'Invalid username' }),
+};
+
+const signUpSchema = z.object({
+  ...common,
+  ...commonTwo,
 });
 
 export const authRouter = router({
@@ -98,7 +103,14 @@ export const authRouter = router({
         return {
           status: true,
           message: 'Logged in successfully',
-          data: { id: user._id.toString(), email: user.email },
+          data: {
+            id: user._id.toString(),
+            email: user.email,
+            image: user.image,
+            bio: user.bio,
+            name: user.name,
+            username: user.username,
+          },
         };
       } catch (error: any) {
         throw new Error(error.message || 'An unknown error occurred');
@@ -114,13 +126,38 @@ export const authRouter = router({
     })
     .mutation(async ({ input }) => {
       try {
+        const session = cookies();
+        const sessionId = session.get('auth_session');
+
         await dbConnect();
+
+        if (sessionId === undefined) {
+          const user: TUser | null = await userModel.findOne({
+            username: input.toLowerCase(),
+          });
+          if (user) return true;
+          return false;
+        }
+
+        const sessionUser: TSession | null = await authModel.findOne({
+          _id: sessionId?.value,
+        });
+
+        const isUser: TUser | null = await userModel.findById(
+          sessionUser?.user_id?.toString()
+        );
+
+        if (isUser?.username === input.toLowerCase()) {
+          return false;
+        }
+
         const user: TUser | null = await userModel.findOne({
           username: input.toLowerCase(),
         });
         if (user) return true;
         return false;
       } catch (error: any) {
+        console.log(error);
         throw new Error(error.message || 'An unknown error occurred');
       }
     }),

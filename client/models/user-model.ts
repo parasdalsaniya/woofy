@@ -5,9 +5,16 @@ export type TUser = TUserData & {
   _id: string;
   createdAt: string;
   updatedAt: string;
+  image: string;
+  bio: string;
 };
 
-const UserSchema = new mongoose.Schema<TUserData>(
+type TOtherFields = {
+  image: string;
+  bio: string;
+};
+
+const UserSchema = new mongoose.Schema<TUserData & TOtherFields>(
   {
     name: {
       type: String,
@@ -25,6 +32,14 @@ const UserSchema = new mongoose.Schema<TUserData>(
       type: String,
       required: true,
     },
+    image: {
+      type: String,
+      default: '',
+    },
+    bio: {
+      type: String,
+      default: '',
+    },
   },
   {
     timestamps: true,
@@ -32,4 +47,4 @@ const UserSchema = new mongoose.Schema<TUserData>(
 );
 
 export default mongoose.models.User ||
-  mongoose.model<TUserData>('User', UserSchema);
+  mongoose.model<TUserData & TOtherFields>('User', UserSchema);

@@ -3,6 +3,10 @@ import { create } from 'zustand';
 type TActiveUser = {
   id: string;
   email: string;
+  image: string | undefined;
+  bio: string | undefined;
+  name: string;
+  username: string;
 };
 
 type TUser = {

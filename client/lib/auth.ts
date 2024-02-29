@@ -13,6 +13,10 @@ export const lucia = new Lucia(adapter, {
   getUserAttributes: (attributes: any) => {
     return {
       email: attributes.email,
+      image: attributes.image,
+      name: attributes.name,
+      bio: attributes.bio,
+      username: attributes.username,
     };
   },
 });

@@ -18,7 +18,7 @@ import Common from './common';
 import { trpc } from '@/trpc-client/client';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import useCheckUserName from '@/hooks/useCheckUserName';
 
 export const common = {
   email: z
@@ -31,17 +31,21 @@ export const common = {
     .max(20, { message: 'Password is too long' }),
 };
 
-export const signUpSchema = z.object({
+export const commonTwo = {
   name: z
     .string()
     .min(1, { message: 'Name is required' })
     .max(50, { message: 'Name is too long' }),
-  ...common,
   username: z
     .string()
     .min(3, { message: 'Username is too short man' })
     .max(31, { message: 'Username is too long' })
     .regex(/^[a-z0-9_-]+$/, { message: 'Invalid username' }),
+};
+
+const signUpSchema = z.object({
+  ...common,
+  ...commonTwo,
 });
 
 export type TUserData = z.infer<typeof signUpSchema>;
@@ -57,11 +61,9 @@ const SignUp = () => {
     },
   });
 
-  const [timer, setTimer] = useState<NodeJS.Timeout | undefined>(undefined);
   const { mutateAsync, isLoading } = trpc.auth.createAccount.useMutation();
-  const { mutateAsync: checkUserName, data } =
-    trpc.auth.checkUserName.useMutation();
   const router = useRouter();
+  const { handleCheckUserName, data } = useCheckUserName();
 
   const signUpHandler = async (values: TUserData) => {
     try {
@@ -75,20 +77,6 @@ const SignUp = () => {
         return router.push('/login');
       }
       throw new Error('An unknown error occurred');
-    } catch (error: any) {
-      toast.error(error.message || 'An unknown error occurred');
-    }
-  };
-
-  const handleCheckUserName = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    try {
-      clearTimeout(timer);
-      const newTimer = setTimeout(async () => {
-        await checkUserName(e.target.value);
-      }, 500);
-      setTimer(newTimer);
     } catch (error: any) {
       toast.error(error.message || 'An unknown error occurred');
     }
