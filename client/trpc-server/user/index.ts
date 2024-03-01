@@ -30,14 +30,25 @@ export const userRouter = router({
 
         if (isUniqueUserName) throw new Error('Username is already taken');
 
-        const user = await userModel.findByIdAndUpdate(input.id, {
-          userName: input.username.toLowerCase(),
-          ...input,
-        });
+        const user = await userModel
+          .findByIdAndUpdate(
+            input.id,
+            {
+              userName: input.username.toLowerCase(),
+              ...input,
+            },
+            { new: true }
+          )
+          .select('-password, -createdAt, -updatedAt');
         if (!user) throw new Error('User not found');
 
-        return { status: true, message: 'Profile updated successfully' };
+        return {
+          status: true,
+          message: 'Profile updated successfully',
+          data: user,
+        };
       } catch (error: any) {
+        console.log(error);
         throw new Error(error.message || 'An unknown error occurred');
       }
     }),

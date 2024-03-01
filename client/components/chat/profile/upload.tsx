@@ -5,9 +5,16 @@ import React from 'react';
 type TUpload = {
   image: string | null;
   onChangeFile: (e: string) => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onDelete: (e: string) => void;
 };
 
-const Upload: React.FC<TUpload> = ({ image, onChangeFile }) => {
+const Upload: React.FC<TUpload> = ({
+  image,
+  onChangeFile,
+  onChange,
+  onDelete,
+}) => {
   return (
     <div className="mb-4 flex w-full items-center justify-center">
       {!image ? (
@@ -41,10 +48,11 @@ const Upload: React.FC<TUpload> = ({ image, onChangeFile }) => {
             id="dropzone-file"
             type="file"
             className="hidden"
-            onChange={(e: any) => {
+            onChange={(e) => {
               if (e.target.files && e.target.files[0]) {
                 onChangeFile(URL.createObjectURL(e.target.files[0]));
               }
+              onChange(e);
             }}
           />
         </label>
@@ -59,7 +67,7 @@ const Upload: React.FC<TUpload> = ({ image, onChangeFile }) => {
           />
           <Trash2
             className=" z-2 absolute bottom-2 right-2 cursor-pointer text-primary "
-            onClick={() => onChangeFile('')}
+            onClick={() => onDelete(image)}
           />
         </div>
       )}

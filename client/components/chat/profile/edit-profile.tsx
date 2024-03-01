@@ -25,6 +25,7 @@ import useCheckUserName from '@/hooks/useCheckUserName';
 import { useAppStore } from '@/store/app-state';
 import { toast } from 'sonner';
 import { trpc } from '@/trpc-client/client';
+import { uploadFile, deleteFiles } from '@/app/action/action';
 
 type TUserData = {
   username: string;
@@ -38,10 +39,14 @@ const schema = z.object({
 });
 
 const EditProfile = () => {
-  const [image, setImage] = useState<string | null>(null);
+  const { user, setUser } = useAppStore((s) => s);
+  const [image, setImage] = useState<string | null>(user?.image || null);
+  const [uploadNewImage, setUploadNewImage] = useState<File | undefined>(
+    undefined
+  );
   const [open, setOpen] = useState(false);
   const { handleCheckUserName, data } = useCheckUserName();
-  const user = useAppStore((s) => s.user);
+
   const { mutateAsync, isLoading } = trpc.user.updateUser.useMutation();
   const form = useForm<TUserData>({
     resolver: zodResolver(schema),
@@ -55,11 +60,23 @@ const EditProfile = () => {
   const handleUpdateProfile = async (data: TUserData) => {
     try {
       if (!user) return toast.error('User not found');
-      await mutateAsync({
+
+      let newImage = { secure_url: '' };
+      if (uploadNewImage) {
+        const formData = new FormData();
+        formData.append('file', uploadNewImage);
+        newImage = await uploadFile(formData);
+      }
+
+      const res = await mutateAsync({
         ...data,
         id: user?.id?.toString(),
+        image: newImage.secure_url || image || undefined,
       });
+      setUser({ ...res.data, id: user.id });
       setOpen(false);
+      setUploadNewImage(undefined);
+      setImage(null);
       toast.success('Profile updated successfully');
     } catch (error: any) {
       toast.error(error.message || 'An unknown error occurred');
@@ -76,7 +93,17 @@ const EditProfile = () => {
       </DialogTrigger>
       <DialogContent className=" w-[95%] md:max-w-[500px]">
         <div className=" px-4">
-          <Upload image={image} onChangeFile={(e: string) => setImage(e)} />
+          <Upload
+            image={image}
+            onChangeFile={(e: string) => setImage(e)}
+            onChange={(e) => setUploadNewImage(e.target.files?.[0])}
+            onDelete={(e) => {
+              if (e.includes('https://res.cloudinary.com')) {
+                setImage(null);
+                deleteFiles([e]);
+              }
+            }}
+          />
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(handleUpdateProfile)}
