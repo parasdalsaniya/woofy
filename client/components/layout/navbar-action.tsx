@@ -5,6 +5,7 @@ import Theme from '../theme/theme';
 import Link from 'next/link';
 import { Button } from '../ui/button';
 import { useEffect } from 'react';
+import AddFriends from '../user-request/user-request';
 // import { getLocalData } from '@/utils/utils';
 
 type TNavAction = {
@@ -26,15 +27,19 @@ const NavbarAction: React.FC<TNavAction> = ({ user }) => {
     setUser(user);
   }, [user]);
 
-  if (activeUser?.id) return null;
-
   return (
-    <div className="flex items-center justify-between gap-4">
-      <Theme />
-      <Link href="/login">
-        <Button className=" h-8">Login</Button>
-      </Link>
-    </div>
+    <>
+      {activeUser?.id ? (
+        <AddFriends />
+      ) : (
+        <div className="flex items-center justify-between gap-4">
+          <Theme />
+          <Link href="/login">
+            <Button className=" h-8">Login</Button>
+          </Link>
+        </div>
+      )}
+    </>
   );
 };
 

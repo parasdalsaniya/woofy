@@ -7,11 +7,13 @@ export type TUser = TUserData & {
   updatedAt: string;
   image: string;
   bio: string;
+  friends: string[];
 };
 
 type TOtherFields = {
   image: string;
   bio: string;
+  friends: string[];
 };
 
 const UserSchema = new mongoose.Schema<TUserData & TOtherFields>(
@@ -39,6 +41,10 @@ const UserSchema = new mongoose.Schema<TUserData & TOtherFields>(
     bio: {
       type: String,
       default: '',
+    },
+    friends: {
+      type: [String],
+      default: [],
     },
   },
   {
