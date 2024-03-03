@@ -6,6 +6,7 @@ import { lucia, validateRequest } from '@/lib/auth';
 import { cookies } from 'next/headers';
 import z from 'zod';
 import authModel, { TSession } from '@/models/auth-model';
+import redisClient from '@/redis/redis';
 
 export const common = {
   email: z
@@ -100,6 +101,10 @@ export const authRouter = router({
           sessionCookie.value,
           sessionCookie.attributes
         );
+
+        const { password, ...userData } = user;
+        redisClient.set(`session:${session.id}`, JSON.stringify(userData));
+
         return {
           status: true,
           message: 'Logged in successfully',
@@ -110,6 +115,9 @@ export const authRouter = router({
             bio: user.bio,
             name: user.name,
             username: user.username,
+          },
+          cookies: {
+            value: sessionCookie.value,
           },
         };
       } catch (error: any) {
@@ -167,6 +175,7 @@ export const authRouter = router({
       if (!session) throw new Error('Unauthorized');
 
       await lucia.invalidateSession(session.id);
+      redisClient.del(`session:${session.id}`);
       const sessionCookie = lucia.createBlankSessionCookie();
       cookies().set(
         sessionCookie.name,

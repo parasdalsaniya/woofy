@@ -19,12 +19,21 @@ type TNavAction = {
   } | null;
 };
 
-const NavbarAction: React.FC<TNavAction> = ({ user }) => {
-  const { user: activeUser, setUser } = useAppStore((state) => state);
+type TCookies = {
+  value: string;
+};
+
+const NavbarAction: React.FC<TNavAction & TCookies> = ({ user, value }) => {
+  const {
+    user: activeUser,
+    setUser,
+    setCookies,
+  } = useAppStore((state) => state);
   // const localUser = getLocalData<boolean>('user');
 
   useEffect(() => {
     setUser(user);
+    setCookies({ value });
   }, [user]);
 
   return (

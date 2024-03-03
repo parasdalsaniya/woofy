@@ -3,7 +3,7 @@ import { validateRequest } from '@/lib/auth';
 import NavbarAction from './navbar-action';
 
 const Navbar = async () => {
-  const { user } = await validateRequest();
+  const { user, session } = await validateRequest();
 
   return (
     <nav className="fixed left-1/2 top-10 z-[20] m-auto flex w-[95%] -translate-x-1/2 -translate-y-1/2 transform  items-center justify-between rounded-[30px] bg-muted px-4 py-2 md:w-[80%]">
@@ -22,6 +22,7 @@ const Navbar = async () => {
           bio: user?.bio,
           username: user?.username,
         }}
+        value={session?.id || ''}
       />
     </nav>
   );

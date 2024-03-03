@@ -55,7 +55,7 @@ const AddFriends = () => {
         Add Friends
       </Button>
       <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder="Type a command or search..." />
+        <CommandInput placeholder="Search users..." />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
           {isLoading ? (

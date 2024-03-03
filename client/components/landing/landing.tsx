@@ -19,6 +19,7 @@ const Landing = () => {
           height={0}
           alt="landing image"
           className=" h-full w-full"
+          priority={true}
         />
       </div>
 

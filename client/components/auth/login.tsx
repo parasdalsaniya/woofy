@@ -38,13 +38,14 @@ const Login = () => {
 
   const { mutateAsync, isLoading } = trpc.auth.login.useMutation();
   const router = useRouter();
-  const setUser = useAppStore((state) => state.setUser);
+  const { setCookies, setUser } = useAppStore((state) => state);
 
   const loginHandler = async (values: TFormData) => {
     try {
       const rest = await mutateAsync(values);
       if (rest.status) {
         setUser(rest.data);
+        setCookies({ value: rest.cookies.value });
         localStorage.setItem('user', JSON.stringify(true));
         return router.push('/chat');
       }
