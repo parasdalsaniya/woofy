@@ -26,6 +26,7 @@ import { useAppStore } from '@/store/app-state';
 import { toast } from 'sonner';
 import { trpc } from '@/trpc-client/client';
 import { uploadFile, deleteFiles } from '@/app/action/action';
+import { getErrorMessage } from '@/utils/utils';
 
 type TUserData = {
   username: string;
@@ -78,8 +79,9 @@ const EditProfile = () => {
       setUploadNewImage(undefined);
       setImage(null);
       toast.success('Profile updated successfully');
-    } catch (error: any) {
-      toast.error(error.message || 'An unknown error occurred');
+    } catch (error) {
+      const message = getErrorMessage(error);
+      toast.error(message);
     }
   };
 

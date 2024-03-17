@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useAppStore } from '@/store/app-state';
 import { LogOut } from 'lucide-react';
-import useSocket from '@/socket/socket';
+import { useSocket } from '@/store/use-socket';
+import { getErrorMessage } from '@/utils/utils';
 
 const Logout = () => {
   const { mutateAsync } = trpc.auth.logout.useMutation();
@@ -19,9 +20,10 @@ const Logout = () => {
       router.push('/login');
       setUser(null);
       setCookies({ value: '' });
-      socket.disconnect();
-    } catch (error: any) {
-      toast.error(error.message || 'An unknown error occurred');
+      socket?.disconnect();
+    } catch (error) {
+      const message = getErrorMessage(error);
+      toast.error(message);
     }
   };
 

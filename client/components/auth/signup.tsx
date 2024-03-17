@@ -19,6 +19,7 @@ import { trpc } from '@/trpc-client/client';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import useCheckUserName from '@/hooks/useCheckUserName';
+import { getErrorMessage } from '@/utils/utils';
 
 export const common = {
   email: z
@@ -77,8 +78,9 @@ const SignUp = () => {
         return router.push('/login');
       }
       throw new Error('An unknown error occurred');
-    } catch (error: any) {
-      toast.error(error.message || 'An unknown error occurred');
+    } catch (error) {
+      const message = getErrorMessage(error);
+      toast.error(message);
     }
   };
 

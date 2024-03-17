@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { commonTwo } from '../auth';
 import { cookies } from 'next/headers';
 import authModel, { TSession } from '@/models/auth-model';
+import { getErrorMessage } from '@/utils/utils';
 
 const schema = z.object({
   ...commonTwo,
@@ -49,8 +50,9 @@ export const userRouter = router({
           message: 'Profile updated successfully',
           data: user,
         };
-      } catch (error: any) {
-        throw new Error(error.message || 'An unknown error occurred');
+      } catch (error) {
+        const message = getErrorMessage(error);
+        throw new Error(message);
       }
     }),
   getAllUser: publicProcedure.query(async () => {
@@ -88,8 +90,9 @@ export const userRouter = router({
         message: 'Users fetched successfully',
         data: users,
       };
-    } catch (error: any) {
-      throw new Error(error.message || 'An unknown error occurred');
+    } catch (error) {
+      const message = getErrorMessage(error);
+      throw new Error(message);
     }
   }),
 });

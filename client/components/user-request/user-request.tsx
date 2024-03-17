@@ -15,6 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import Spinner from '../ui/spinner';
 import { useAppStore } from '@/store/app-state';
 import { toast } from 'sonner';
+import { getErrorMessage } from '@/utils/utils';
 
 const AddFriends = () => {
   const [open, setOpen] = React.useState(false);
@@ -44,8 +45,9 @@ const AddFriends = () => {
       });
       setSelected(null);
       refetch();
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to send request');
+    } catch (error) {
+      const message = getErrorMessage(error);
+      toast.error(message);
     }
   };
 

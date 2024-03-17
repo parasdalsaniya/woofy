@@ -4,6 +4,7 @@ import userChat, { TUserChat } from '@/models/user-chat';
 import chat, { TChat } from '@/models/chat';
 import z from 'zod';
 import userModel from '@/models/user-model';
+import { getErrorMessage } from '@/utils/utils';
 
 export const userFriendRouter = router({
   sendChatRequest: publicProcedure
@@ -61,8 +62,9 @@ export const userFriendRouter = router({
           message: 'Chat request sent successfully',
           data: chatRequest,
         };
-      } catch (error: any) {
-        throw new Error(error.message || 'An unknown error occurred');
+      } catch (error) {
+        const message = getErrorMessage(error);
+        throw new Error(message);
       }
     }),
 });

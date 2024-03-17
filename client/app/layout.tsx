@@ -5,6 +5,7 @@ import { Provider } from '@/lib/reactQuery-provider';
 import { ThemeProvider } from '@/lib/theme-provider';
 import { Toaster } from '@/components/ui/sonner';
 import Navbar from '@/components/layout/navbar';
+import { SocketContextProvider } from '@/store/use-socket';
 
 const poppins = Poppins({
   weight: ['400', '700'],
@@ -33,9 +34,11 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Provider>
-            <Navbar />
-            {children}
-            <Toaster />
+            <SocketContextProvider>
+              <Navbar />
+              {children}
+              <Toaster />
+            </SocketContextProvider>
           </Provider>
         </ThemeProvider>
       </body>

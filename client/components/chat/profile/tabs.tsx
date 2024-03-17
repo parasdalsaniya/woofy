@@ -3,7 +3,7 @@
 import Logout from '@/components/auth/logout';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
-import { Moon, Sun, User } from 'lucide-react';
+import { Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import EditProfile from './edit-profile';
 

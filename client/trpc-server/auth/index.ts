@@ -7,6 +7,7 @@ import { cookies } from 'next/headers';
 import z from 'zod';
 import authModel, { TSession } from '@/models/auth-model';
 import redisClient from '@/redis/redis';
+import { getErrorMessage } from '@/utils/utils';
 
 export const common = {
   email: z
@@ -68,8 +69,9 @@ export const authRouter = router({
         });
 
         return { status: true, message: 'Account created successfully' };
-      } catch (error: any) {
-        throw new Error(error.message || 'An unknown error occurred');
+      } catch (error) {
+        const message = getErrorMessage(error);
+        throw new Error(message);
       }
     }),
   login: publicProcedure
@@ -120,8 +122,9 @@ export const authRouter = router({
             value: sessionCookie.value,
           },
         };
-      } catch (error: any) {
-        throw new Error(error.message || 'An unknown error occurred');
+      } catch (error) {
+        const message = getErrorMessage(error);
+        throw new Error(message);
       }
     }),
   checkUserName: publicProcedure
@@ -164,9 +167,9 @@ export const authRouter = router({
         });
         if (user) return true;
         return false;
-      } catch (error: any) {
-        console.log(error);
-        throw new Error(error.message || 'An unknown error occurred');
+      } catch (error) {
+        const message = getErrorMessage(error);
+        throw new Error(message);
       }
     }),
   logout: publicProcedure.mutation(async () => {
@@ -183,8 +186,9 @@ export const authRouter = router({
         sessionCookie.attributes
       );
       return true;
-    } catch (error: any) {
-      throw new Error(error.message || 'An unknown error occurred');
+    } catch (error) {
+      const message = getErrorMessage(error);
+      throw new Error(message);
     }
   }),
 });

@@ -1,8 +1,12 @@
-import { Server } from "socket.io";
+import { Server, Socket } from "socket.io";
 import http from "http";
 import redis from "./redis-server";
 
 const httpServer = http.createServer();
+
+interface SocketWithUser extends Socket {
+  user: string;
+}
 
 const io = new Server(httpServer, {
   cors: {
@@ -23,10 +27,14 @@ io.use(async (socket, next) => {
   return next();
 });
 
-io.on("connection", (socket) => {
+io.on("connect", (socket) => {
   console.log("a user connected", socket.id);
   socket.on("disconnect", () => {
     console.log("user disconnected", socket.id);
+  });
+
+  socket.on("sendMessage", (data) => {
+    io.emit(data.id, data.message);
   });
 });
 

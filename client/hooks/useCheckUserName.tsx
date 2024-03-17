@@ -1,6 +1,7 @@
 'use client';
 
 import { trpc } from '@/trpc-client/client';
+import { getErrorMessage } from '@/utils/utils';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -19,8 +20,9 @@ const useCheckUserName = () => {
         await checkUserName(e.target.value);
       }, 500);
       setTimer(newTimer);
-    } catch (error: any) {
-      toast.error(error.message || 'An unknown error occurred');
+    } catch (error) {
+      const message = getErrorMessage(error);
+      toast.error(message);
     }
   };
 

@@ -20,6 +20,7 @@ import { trpc } from '@/trpc-client/client';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/store/app-state';
+import { getErrorMessage } from '@/utils/utils';
 
 export const loginSchema = z.object({
   ...common,
@@ -49,8 +50,9 @@ const Login = () => {
         localStorage.setItem('user', JSON.stringify(true));
         return router.push('/chat');
       }
-    } catch (error: any) {
-      toast.error(error.message || 'An unknown error occurred');
+    } catch (error) {
+      const message = getErrorMessage(error);
+      toast.error(message);
     }
   };
   return (
